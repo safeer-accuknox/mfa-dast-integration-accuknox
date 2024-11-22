@@ -25,6 +25,7 @@ pipeline {
             steps {
                 script {
                     sh '''
+                    pwd
                     ls -lahR
                     cat scripts/mfa
                     '''
