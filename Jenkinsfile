@@ -12,17 +12,9 @@ pipeline {
                 git 'https://github.com/safeer-accuknox/mfa-dast-integration-accuknox.git'
             }
         }
-        stage('Run Python container for updating MFA') {
+        stage('foo') {
             steps {
-                script {
-                    try {
-                        docker.image('python:3.11-slim').inside('-v $(pwd):/wrk/:rw') {
-                            sh 'pip install --no-cache-dir pyotp && python /wrk/scripts/mfa-gen.py'
-                        }
-                    } catch (Exception e) {
-                        error "Error in Python container for MFA update: ${e.message}"
-                    }
-                }
+                sh "docker version" // DOCKER_CERT_PATH is automatically picked up by the Docker client
             }
         }
 
