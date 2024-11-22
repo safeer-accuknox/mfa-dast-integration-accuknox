@@ -27,7 +27,7 @@ pipeline {
                     sh '''
                     pwd
                     ls -lahR
-                    cat scripts/mfa
+                    #cat scripts/mfa
                     '''
                 }
             }
