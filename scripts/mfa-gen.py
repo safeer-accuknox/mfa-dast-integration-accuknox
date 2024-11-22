@@ -6,7 +6,7 @@ import time
 script_dir = os.path.dirname(os.path.abspath(__file__))
 output_file_path = os.path.join(script_dir, 'mfa')
 
-secret = "FEYBGZ3DCNOEMNAP"
+secret = "FVRHQCBDIFTV2J26"
 totp = pyotp.TOTP(secret)
 
 scheduler = sched.scheduler(time.time, time.sleep)

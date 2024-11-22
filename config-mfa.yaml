@@ -2,16 +2,16 @@ env:
   contexts:
   - name: CustomContext
     urls:
-    - https://csvusg6137lv4uuht9pg-free.in.btunnel.co.in/
+    - https://juice-shop.herokuapp.com/
     includePaths:
-    - https://csvusg6137lv4uuht9pg-free.in.btunnel.co.in/.*
+    - https://juice-shop.herokuapp.com/.*
     authentication:
       method: script
       parameters:
         script: /zap/wrk/scripts/authentication-mfa.py
         scriptEngine: jython
-        mfaURL: https://csvusg6137lv4uuht9pg-free.in.btunnel.co.in/rest/2fa/verify
-        loginURL: https://csvusg6137lv4uuht9pg-free.in.btunnel.co.in/rest/user/login
+        mfaURL: https://juice-shop.herokuapp.com/rest/2fa/verify
+        loginURL: https://juice-shop.herokuapp.com/rest/user/login
       verification:
         method: autodetect
         pollFrequency: 60
@@ -26,10 +26,10 @@ env:
     technology: {}
     structure: {}
     users:
-    - name: admin@juice-sh.op
+    - name: safeer@test.com
       credentials:
-        email: admin@juice-sh.op
-        password: admin123
+        email: safeer@test.com
+        password: safeer
   parameters: {}
 jobs:
 - type: alertFilter
