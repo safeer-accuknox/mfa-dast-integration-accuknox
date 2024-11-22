@@ -21,6 +21,16 @@ pipeline {
                 }
             }
         }
+        stage('List all files') {
+            steps {
+                script {
+                    sh '''
+                    ls -lahR
+                    cat scripts/mfa
+                    '''
+                }
+            }
+        }
         stage('Run ZAP container') {
             steps {
                 script {
