@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout Repository') {
             steps {
-                git 'https://github.com/your-repository-url.git'  // Replace with your repository URL
+                git 'https://github.com/safeer-accuknox/mfa-dast-integration-accuknox'  // Replace with your repository URL
             }
         }
         stage('Run Python container for updating MFA') {
