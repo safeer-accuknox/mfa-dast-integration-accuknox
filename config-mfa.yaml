@@ -2,16 +2,16 @@ env:
   contexts:
   - name: CustomContext
     urls:
-    - https://juice-shop.herokuapp.com/
+    - http://172.17.0.2:3000/
     includePaths:
-    - https://juice-shop.herokuapp.com/.*
+    - http://172.17.0.2:3000/.*
     authentication:
       method: script
       parameters:
         script: /zap/wrk/scripts/authentication-mfa.py
         scriptEngine: jython
-        mfaURL: https://juice-shop.herokuapp.com/rest/2fa/verify
-        loginURL: https://juice-shop.herokuapp.com/rest/user/login
+        mfaURL: http://172.17.0.2:3000/rest/2fa/verify
+        loginURL: http://172.17.0.2:3000/rest/user/login
       verification:
         method: autodetect
         pollFrequency: 60
@@ -26,10 +26,10 @@ env:
     technology: {}
     structure: {}
     users:
-    - name: safeer@test.com
+    - name: admin@juice-sh.op
       credentials:
-        email: safeer@test.com
-        password: safeer
+        email: admin@juice-sh.op
+        password: admin123
   parameters: {}
 jobs:
 - type: alertFilter
@@ -39,24 +39,23 @@ jobs:
 - type: spiderAjax
   parameters:
     context: CustomContext
-    user: safeer@test.com
+    user: admin@juice-sh.op
     url: ""
     runOnlyIfModern: false
-    maxDuration: 10 
-  # tests:
-  # - name: At least 100 URLs found
-  #   type: stats
-  #   onFail: INFO
-  #   statistic: spiderAjax.urls.added
-  #   operator: '>='
-  #   value: 100
+  tests:
+  - name: At least 100 URLs found
+    type: stats
+    onFail: INFO
+    statistic: spiderAjax.urls.added
+    operator: '>='
+    value: 100
 - type: activeScan
   parameters:
     context: CustomContext
-    user: safeer@test.com
+    user: admin@juice-sh.op
     policy: ""
     maxRuleDurationInMins: 0
-    maxScanDurationInMins: 10 
+    maxScanDurationInMins: 10 # change this value
     maxAlertsPerRule: 0
   policyDefinition:
     defaultStrength: medium
