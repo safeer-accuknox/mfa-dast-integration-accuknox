@@ -1,0 +1,105 @@
+env:
+  contexts:
+  - name: CustomContext
+    urls:
+    - http://172.17.0.2:3000/
+    includePaths:
+    - http://172.17.0.2:3000/.*
+    authentication:
+      method: script
+      parameters:
+        script: /zap/wrk/scripts/authentication-mfa.py
+        scriptEngine: jython
+        mfaURL: http://172.17.0.2:3000/rest/2fa/verify
+        loginURL: http://172.17.0.2:3000/rest/user/login
+      verification:
+        method: autodetect
+        pollFrequency: 60
+        pollUnits: requests
+        pollUrl: ""
+        pollPostData: ""
+    sessionManagement:
+      method: script
+      parameters:
+        script: /zap/wrk/scripts/authorization-header-session.py
+        scriptEngine: jython
+    technology: {}
+    structure: {}
+    users:
+    - name: admin@juice-sh.op
+      credentials:
+        email: admin@juice-sh.op
+        password: admin123
+  parameters: {}
+jobs:
+- type: alertFilter
+  parameters: {}
+- type: passiveScan-config
+  parameters: {}
+# - type: spider
+#   parameters:
+#     context: CustomContext
+#     user: admin@juice-sh.op
+#     url: ""
+#     maxDuration: 0
+#     maxDepth: 0
+#     maxChildren: 0
+#   tests:
+#   - name: At least 100 URLs found
+#     type: stats
+#     onFail: INFO
+#     statistic: automation.spider.urls.added
+#     operator: '>='
+#     value: 100
+- type: spiderAjax
+  parameters:
+    context: CustomContext
+    user: admin@juice-sh.op
+    url: ""
+    runOnlyIfModern: false
+  tests:
+  - name: At least 100 URLs found
+    type: stats
+    onFail: INFO
+    statistic: spiderAjax.urls.added
+    operator: '>='
+    value: 100
+- type: activeScan
+  parameters:
+    context: CustomContext
+    user: admin@juice-sh.op
+    policy: ""
+    maxRuleDurationInMins: 0
+    maxScanDurationInMins: 10 # change this value
+    maxAlertsPerRule: 0
+  policyDefinition:
+    defaultStrength: medium
+    defaultThreshold: medium
+# - type: report
+#   parameters:
+#     template: traditional-json
+#     theme: original
+#     reportDir: /zap/wrk
+#     reportFile: report.json
+#     reportTitle: ZAP Scanning Report
+#     reportDescription:  Detailed analysis of security vulnerabilities identified through ZAP (Zed Attack Proxy) scanning, including potential risks, recommended mitigations, and overall security posture evaluation.
+#     displayReport: false
+#   risks:
+#   - info
+#   - low
+#   - medium
+#   - high
+#   confidences:
+#   - falsepositive
+#   - low
+#   - medium
+#   - high
+#   - confirmed
+- type: report
+  parameters:
+    template: "traditional-pdf"
+    reportDir: /zap/wrk
+    reportFile: report.test.pdf
+    reportTitle: "ZAP Scanning Report"
+    reportDescription: ""
+  name: "report-pdf"
