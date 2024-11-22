@@ -16,7 +16,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    docker run -d -it --rm -v /var/jenkins_home/workspace/Accuknox-DAST/:/wrk/:rw python:3.11-slim /bin/bash -c "pip install --no-cache-dir pyotp && python /wrk/scripts/mfa-gen.py"
+                    docker run -d -it --rm -v /home/redshadow/accuknox/accuknox/helpers/jenkins/jenkins_configuration/workspace/Accuknox-DAST:/wrk/:rw python:3.11-slim /bin/bash -c "pip install --no-cache-dir pyotp && python /wrk/scripts/mfa-gen.py"
                     '''
                 }
             }
@@ -36,7 +36,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    docker run --rm -v /var/jenkins_home/workspace/Accuknox-DAST/:/zap/wrk/:rw -u zap -i ghcr.io/zaproxy/zaproxy:stable zap.sh -addoninstall communityScripts -addoninstall jython -loglevel debug -cmd -autorun /zap/wrk/config-mfa.yaml
+                    docker run --rm -v /home/redshadow/accuknox/accuknox/helpers/jenkins/jenkins_configuration/workspace/Accuknox-DAST:/zap/wrk/:rw -u zap -i ghcr.io/zaproxy/zaproxy:stable zap.sh -addoninstall communityScripts -addoninstall jython -loglevel debug -cmd -autorun /zap/wrk/config-mfa.yaml
                     '''
                 }
             }
