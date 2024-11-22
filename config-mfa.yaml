@@ -39,7 +39,7 @@ jobs:
 - type: spiderAjax
   parameters:
     context: CustomContext
-    user: admin@juice-sh.op
+    user: safeer@test.com
     url: ""
     runOnlyIfModern: false
   tests:
@@ -52,7 +52,7 @@ jobs:
 - type: activeScan
   parameters:
     context: CustomContext
-    user: admin@juice-sh.op
+    user: safeer@test.com
     policy: ""
     maxRuleDurationInMins: 0
     maxScanDurationInMins: 10 
