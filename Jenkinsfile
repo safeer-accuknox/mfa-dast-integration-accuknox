@@ -16,7 +16,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    docker run -d -it --rm -v /home/redshadow/accuknox/accuknox/helpers/jenkins/jenkins_configuration/workspace/Accuknox-DAST:/wrk/:rw python:3.11-slim /bin/bash -c "pip install --no-cache-dir pyotp && python /wrk/scripts/mfa-gen.py"
+                    docker run -d -it --name pythonmfa --rm -v /home/redshadow/accuknox/accuknox/helpers/jenkins/jenkins_configuration/workspace/Accuknox-DAST:/wrk/:rw python:3.11-slim /bin/bash -c "pip install --no-cache-dir pyotp && python /wrk/scripts/mfa-gen.py"
                     '''
                 }
             }
@@ -27,6 +27,7 @@ pipeline {
                     sh '''
                     pwd
                     ls -lahR
+                    echo $TOKEN
                     #cat scripts/mfa
                     '''
                 }
@@ -36,7 +37,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    docker run --rm -v /home/redshadow/accuknox/accuknox/helpers/jenkins/jenkins_configuration/workspace/Accuknox-DAST:/zap/wrk/:rw -u zap -i ghcr.io/zaproxy/zaproxy:stable zap.sh -addoninstall communityScripts -addoninstall jython -loglevel debug -cmd -autorun /zap/wrk/config-mfa.yaml
+                    docker run --rm --cpus="8" --memory="8g" --name dastscan -v /home/redshadow/accuknox/accuknox/helpers/jenkins/jenkins_configuration/workspace/Accuknox-DAST:/zap/wrk/:rw -u zap -i ghcr.io/zaproxy/zaproxy:stable zap.sh -addoninstall communityScripts -addoninstall jython -loglevel debug -cmd -autorun /zap/wrk/config-mfa.yaml
                     '''
                 }
             }
@@ -46,6 +47,18 @@ pipeline {
                 script {
                     sh '''
                     curl --location --request POST "https://${END_POINT}/api/v1/artifact/?tenant_id=${TENANT_ID}&data_type=ZAP&label_id=${LABEL}&save_to_s3=false" --header "Tenant-Id: ${TENANT_ID}" --header "Authorization: Bearer ${TOKEN}" --form 'file=@"report.json"'
+                    '''
+                }
+            }
+        }
+        stage('Cleanup') {
+            steps {
+                script {
+                    sh '''
+                    docker ps -a -q -f name=pythonmfa | xargs -r docker stop | xargs -r docker rm
+                    '''
+                    sh '''
+                    docker ps -a -q -f name=dastscan | xargs -r docker stop | xargs -r docker rm
                     '''
                 }
             }
