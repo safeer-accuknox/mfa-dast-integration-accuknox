@@ -55,7 +55,7 @@ jobs:
     user: admin@juice-sh.op
     policy: ""
     maxRuleDurationInMins: 0
-    maxScanDurationInMins: 10 # change this value
+    maxScanDurationInMins: 30 # change this value
     maxAlertsPerRule: 0
   policyDefinition:
     defaultStrength: medium
