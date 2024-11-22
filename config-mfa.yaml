@@ -2,16 +2,16 @@ env:
   contexts:
   - name: CustomContext
     urls:
-    - https://c1f50a8b2f78e8.lhr.life/
+    - https://csvusg6137lv4uuht9pg-free.in.btunnel.co.in/
     includePaths:
-    - https://c1f50a8b2f78e8.lhr.life/.*
+    - https://csvusg6137lv4uuht9pg-free.in.btunnel.co.in/.*
     authentication:
       method: script
       parameters:
         script: /zap/wrk/scripts/authentication-mfa.py
         scriptEngine: jython
-        mfaURL: https://c1f50a8b2f78e8.lhr.life/rest/2fa/verify
-        loginURL: https://c1f50a8b2f78e8.lhr.life/rest/user/login
+        mfaURL: https://csvusg6137lv4uuht9pg-free.in.btunnel.co.in/rest/2fa/verify
+        loginURL: https://csvusg6137lv4uuht9pg-free.in.btunnel.co.in/rest/user/login
       verification:
         method: autodetect
         pollFrequency: 60
