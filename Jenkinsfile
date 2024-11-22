@@ -1,20 +1,43 @@
 pipeline {
-  agent any
-  tools {
-    // a bit ugly because there is no `@Symbol` annotation for the DockerTool
-    // see the discussion about this in PR 77 and PR 52: 
-    // https://github.com/jenkinsci/docker-commons-plugin/pull/77#discussion_r280910822
-    // https://github.com/jenkinsci/docker-commons-plugin/pull/52
-    'org.jenkinsci.plugins.docker.commons.tools.DockerTool' '18.09'
-  }
-  environment {
-    DOCKER_CERT_PATH = credentials('id-for-a-docker-cred')
-  }
-  stages {
-    stage('foo') {
-      steps {
-        sh "docker version" // DOCKER_CERT_PATH is automatically picked up by the Docker client
-      }
+    agent any
+    environment {
+        TOKEN = credentials('ACCUKNOX_TOKEN')
+        END_POINT = 'cspm.demo.accuknox.com'
+        TENANT_ID = '167'
+        LABEL = 'SPOC'
     }
-  }
+    stages {
+        stage('Checkout Repository') {
+            steps {
+                git 'https://github.com/your-repository-url.git'  // Replace with your repository URL
+            }
+        }
+        stage('Run Python container for updating MFA') {
+            steps {
+                script {
+                    sh '''
+                    docker run -d -it --rm -v $(pwd):/wrk/:rw python:3.11-slim /bin/bash -c "pip install --no-cache-dir pyotp && python /wrk/scripts/mfa-gen.py"
+                    '''
+                }
+            }
+        }
+        stage('Run ZAP container') {
+            steps {
+                script {
+                    sh '''
+                    docker run --rm -v $(pwd):/zap/wrk/:rw -u zap -i ghcr.io/zaproxy/zaproxy:stable zap.sh -addoninstall communityScripts -addoninstall jython -loglevel debug -cmd -autorun /zap/wrk/config-mfa.yaml
+                    '''
+                }
+            }
+        }
+        stage('Upload Scan Results') {
+            steps {
+                script {
+                    sh '''
+                    curl --location --request POST "https://${END_POINT}/api/v1/artifact/?tenant_id=${TENANT_ID}&data_type=ZAP&label_id=${LABEL}&save_to_s3=false" --header "Tenant-Id: ${TENANT_ID}" --header "Authorization: Bearer ${TOKEN}" --form 'file=@"report.json"'
+                    '''
+                }
+            }
+        }
+    }
 }
