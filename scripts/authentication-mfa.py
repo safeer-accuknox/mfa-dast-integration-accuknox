@@ -53,8 +53,10 @@ def authenticate(helper, paramsValues, credentials):
         
         helper.sendAndReceive(mfa_msg, True)
         AuthenticationHelper.addAuthMessageToHistory(mfa_msg)
+        print("mfa_response", mfa_msg.getResponseBody().toString())
         mfa_response = json.loads(mfa_msg.getResponseBody().toString())
         token = mfa_response.get("authentication", {}).get("token")
+        print("token", token)
         if not token:
             raise Exception("Authentication failed")
         return mfa_msg
