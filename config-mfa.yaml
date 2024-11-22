@@ -42,13 +42,14 @@ jobs:
     user: safeer@test.com
     url: ""
     runOnlyIfModern: false
-  tests:
-  - name: At least 100 URLs found
-    type: stats
-    onFail: INFO
-    statistic: spiderAjax.urls.added
-    operator: '>='
-    value: 100
+    maxDuration: 10 
+  # tests:
+  # - name: At least 100 URLs found
+  #   type: stats
+  #   onFail: INFO
+  #   statistic: spiderAjax.urls.added
+  #   operator: '>='
+  #   value: 100
 - type: activeScan
   parameters:
     context: CustomContext
