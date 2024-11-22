@@ -18,7 +18,7 @@ jobs:
 
       - name: Run ZAP container
         run: |
-          docker run --rm -v $(pwd):/zap/wrk/:rw -u zap -i ghcr.io/zaproxy/zaproxy:stable zap.sh -addoninstall communityScripts -addoninstall jython -loglevel debug -cmd -autorun /zap/wrk/config.yaml
+          docker run --rm -v $(pwd):/zap/wrk/:rw -u zap -i ghcr.io/zaproxy/zaproxy:stable zap.sh -addoninstall communityScripts -addoninstall jython -loglevel debug -cmd -autorun /zap/wrk/config-mfa.yaml
 
       - name: Uploading scan results
         env:
